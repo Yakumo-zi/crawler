@@ -2,10 +2,12 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"net/http"
 
+	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/unicode"
@@ -14,6 +16,27 @@ import (
 
 func main() {
 
+	body, err := Fetch("https://www.thepaper.cn/channel_25950")
+	if err != nil {
+		panic(err)
+	}
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))
+	if err != nil {
+		panic(err)
+	}
+	doc.Find(".ant-card-body a").Each(func(i int, s *goquery.Selection) {
+		title := s.Find("h2").Text()
+		link, ok := s.Attr("href")
+		if !ok {
+			return
+		}
+		if len(title) == 0 {
+			return
+		}
+		fmt.Printf("No.%d\n", i)
+		fmt.Printf("\tTitle:%s\n", title)
+		fmt.Printf("\tLink:%s\n", link)
+	})
 }
 
 func Fetch(url string) ([]byte, error) {
