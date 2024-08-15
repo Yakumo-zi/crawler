@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
+
+	"crawler/proxy"
 
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding"
@@ -37,16 +40,28 @@ func (BaseFetch) Get(url string) ([]byte, error) {
 }
 
 type BrowserFetch struct {
+	Proxy   proxy.ProxyFunc
+	Timeout time.Duration
 }
 
-func (BrowserFetch) Get(url string) ([]byte, error) {
-	client := &http.Client{}
+func (b BrowserFetch) Get(url string) ([]byte, error) {
+	client := &http.Client{
+		Timeout: b.Timeout,
+	}
+	if b.Proxy != nil {
+		transport := http.DefaultTransport.(*http.Transport)
+		transport.Proxy = b.Proxy
+		client.Transport = transport
+	}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36")
 	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
 	if resp.StatusCode != http.StatusOK {
 		fmt.Printf("Error status code:%v", resp.StatusCode)
 	}
