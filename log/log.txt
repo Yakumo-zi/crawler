@@ -1,1 +1,0 @@
-{"level":"info","ts":1723737339.5866356,"caller":"log/log_test.go:13","msg":"log init end"}

@@ -9,7 +9,10 @@ require (
 	golang.org/x/text v0.17.0
 )
 
+require github.com/andybalholm/cascadia v1.3.2 // indirect
+
 require (
+	github.com/PuerkitoBio/goquery v1.9.2
 	github.com/chromedp/cdproto v0.0.0-20240801214329-3f85d328b335 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect

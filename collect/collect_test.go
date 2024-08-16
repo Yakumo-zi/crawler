@@ -19,7 +19,7 @@ func TestBrowserFetcher(t *testing.T) {
 		Timeout: 3000 * time.Millisecond,
 		Proxy:   p,
 	}
-	body, err := f.Get(url)
+	body, err := f.Get(&Request{URL: url})
 	if err != nil {
 		t.Fatalf(`read content failed:%v`, err)
 	}
